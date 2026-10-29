@@ -31,14 +31,17 @@ app.get('/api/health', (req, res) => {
 });
 
 // Serve static frontend build if it exists
+const publicDir = path.join(__dirname, 'public');
 const frontendDist = path.join(__dirname, '../frontend/dist');
-if (fs.existsSync(frontendDist)) {
-  app.use(express.static(frontendDist));
+const serveDir = fs.existsSync(publicDir) ? publicDir : (fs.existsSync(frontendDist) ? frontendDist : null);
+
+if (serveDir) {
+  app.use(express.static(serveDir, { etag: false, maxAge: 0 }));
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api')) {
       return next();
     }
-    res.sendFile(path.join(frontendDist, 'index.html'));
+    res.sendFile(path.join(serveDir, 'index.html'));
   });
 }
 
