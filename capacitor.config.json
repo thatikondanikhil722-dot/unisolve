@@ -1,6 +1,6 @@
 {
-  "appId": "edu.apex.issueapp",
-  "appName": "University Student Issue Portal",
+  "appId": "com.unisolve.app",
+  "appName": "UniSolve",
   "webDir": "frontend/dist",
   "bundledWebRuntime": false,
   "server": {

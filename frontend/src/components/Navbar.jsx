@@ -79,7 +79,7 @@ export default function Navbar({ onToggleSidebar }) {
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-base tracking-tight text-slate-900">
-                      Apex University
+                      UniSolve
                     </span>
                     <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
                       user?.role === 'admin' 
