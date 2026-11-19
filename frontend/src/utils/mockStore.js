@@ -239,15 +239,21 @@ class MockStore {
   setFeedback(val) { localStorage.setItem('uni_mock_feedback', JSON.stringify(val)); }
   setNotifs(val) { localStorage.setItem('uni_mock_notifs', JSON.stringify(val)); }
 
-  login(username, password, expectedRole) {
+  login(username, password) {
+    const clean = (username || '').trim().toLowerCase();
     const users = this.getUsers();
-    const user = users.find(u => (u.username === username || u.id === username));
-    if (!user) throw new Error('User not found. Check credentials.');
-    if (user.password !== password && password !== 'student123' && password !== 'admin123') {
-      throw new Error('Invalid password.');
+    const user = users.find(u => 
+      u.username.toLowerCase() === clean || 
+      u.id.toLowerCase() === clean ||
+      (clean === 'admin' && u.role === 'admin') ||
+      (clean === 'student' && u.role === 'student')
+    );
+    if (!user) {
+      throw new Error('User not found. Use student1 or admin.');
     }
-    if (expectedRole && user.role !== expectedRole) {
-      throw new Error(`This account is registered as ${user.role}. Please switch portals.`);
+    const cleanPass = (password || '').trim();
+    if (user.password !== cleanPass && cleanPass !== 'student123' && cleanPass !== 'admin123') {
+      throw new Error('Invalid password. Try student123 or admin123');
     }
     const token = 'mock-jwt-token-' + user.id + '-' + Date.now();
     return { token, user };
@@ -352,7 +358,6 @@ class MockStore {
     issues.unshift(newIssue);
     this.setIssues(issues);
 
-    // Add confirmation notif
     const notifs = this.getNotifs();
     notifs.unshift({
       id: `NOTIF-${Date.now()}`,
